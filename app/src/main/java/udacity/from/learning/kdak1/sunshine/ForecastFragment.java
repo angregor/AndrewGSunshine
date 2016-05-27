@@ -9,11 +9,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
 import android.util.Log;
 import android.os.AsyncTask;
 import android.net.Uri;
+import android.widget.Toast;
+import android.content.Context;
+import android.content.Intent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,6 +92,16 @@ public class ForecastFragment extends Fragment {
 
         ListView forecastListView = (ListView)rootView.findViewById(R.id.listview_forecast);
         forecastListView.setAdapter(myAdapter);
+        forecastListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String forecastData = myAdapter.getItem(position);
+
+                Intent launchDetailIntent = new Intent(getActivity(), DetailActivity.class).
+                        putExtra(Intent.EXTRA_TEXT, forecastData);
+                startActivity(launchDetailIntent);
+            }
+        });
 
         return rootView;
 
@@ -115,7 +129,7 @@ public class ForecastFragment extends Fragment {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                final String baseURL = "http://api.openweathermap.org/data/2.5/daily?";
+                final String baseURL = "http://api.openweathermap.org/data/2.5/weather?";
 
                 Uri builtUri = Uri.parse(baseURL).buildUpon().
                         appendQueryParameter("q",params[0]).
