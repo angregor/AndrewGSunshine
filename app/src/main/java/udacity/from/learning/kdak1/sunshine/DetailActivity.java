@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.support.v4.view.MenuItemCompat;
 
 public class DetailActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +27,28 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
+
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+
+        String forecastStr = "You have nothing to share!";
+
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
+            forecastStr = intent.getStringExtra(Intent.EXTRA_TEXT) + " #SunshineApp";
+        }
+
+        ShareActionProvider myProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, forecastStr);
+        shareIntent.setType("text/plain");
+
+        if(myProvider != null) {
+            myProvider.setShareIntent(shareIntent);
+        }
+
         return true;
     }
 
